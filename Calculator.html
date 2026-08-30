@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Basic Calculator</title>
+  <style>
+    body {
+      background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .calculator {
+      width: 320px;
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+      overflow: hidden;
+    }
+
+    .display {
+      background: #222;
+      color: #0ff;
+      font-size: 2em;
+      text-align: right;
+      padding: 20px;
+      border-top-left-radius: 20px;
+      border-top-right-radius: 20px;
+      height: 70px;
+      box-sizing: border-box;
+      letter-spacing: 1px;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      padding: 15px;
+    }
+
+    button {
+      background: #f1f3f4;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.2em;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    button:hover {
+      background: #dbeafe;
+      transform: scale(1.05);
+    }
+
+    button.operator {
+      background: #93c5fd;
+      color: #000;
+      font-weight: bold;
+    }
+
+    button.equal {
+      background: #2563eb;
+      color: #fff;
+      grid-column: span 2;
+    }
+
+    button.clear {
+      background: #f87171;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="calculator">
+    <div id="display" class="display">0</div>
+    <div class="buttons">
+      <button class="clear" onclick="clearDisplay()">C</button>
+      <button onclick="deleteLast()">⌫</button>
+      <button class="operator" onclick="appendOperator('/')">÷</button>
+      <button class="operator" onclick="appendOperator('*')">×</button>
+
+      <button onclick="appendNumber('7')">7</button>
+      <button onclick="appendNumber('8')">8</button>
+      <button onclick="appendNumber('9')">9</button>
+      <button class="operator" onclick="appendOperator('-')">−</button>
+
+      <button onclick="appendNumber('4')">4</button>
+      <button onclick="appendNumber('5')">5</button>
+      <button onclick="appendNumber('6')">6</button>
+      <button class="operator" onclick="appendOperator('+')">+</button>
+
+      <button onclick="appendNumber('1')">1</button>
+      <button onclick="appendNumber('2')">2</button>
+      <button onclick="appendNumber('3')">3</button>
+      <button onclick="appendNumber('0')">0</button>
+
+      <button onclick="appendNumber('.')">.</button>
+      <button class="equal" onclick="calculate()">=</button>
+    </div>
+  </div>
+
+  <script>
+    const display = document.getElementById('display');
+    let currentInput = '';
+
+    function appendNumber(num) {
+      if (currentInput === '0' && num !== '.') currentInput = '';
+      currentInput += num;
+      updateDisplay();
+    }
+
+    function appendOperator(op) {
+      if (currentInput === '') return;
+      if (/[+\-*/]$/.test(currentInput)) return;
+      currentInput += op;
+      updateDisplay();
+    }
+
+    function clearDisplay() {
+      currentInput = '';
+      updateDisplay();
+    }
+
+    function deleteLast() {
+      currentInput = currentInput.slice(0, -1);
+      updateDisplay();
+    }
+
+    function calculate() {
+      try {
+        currentInput = eval(currentInput).toString();
+      } catch {
+        currentInput = 'Error';
+      }
+      updateDisplay();
+    }
+
+    function updateDisplay() {
+      display.textContent = currentInput || '0';
+    }
+
+    // ✅ Keyboard Support
+    document.addEventListener('keydown', (event) => {
+      const key = event.key;
+      if (!isNaN(key) || key === '.') appendNumber(key);
+      else if (['+', '-', '*', '/'].includes(key)) appendOperator(key);
+      else if (key === 'Enter') calculate();
+      else if (key === 'Backspace') deleteLast();
+      else if (key === 'Escape') clearDisplay();
+    });
+  </script>
+
+</body>
+</html>
